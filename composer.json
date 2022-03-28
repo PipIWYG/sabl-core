@@ -1,0 +1,24 @@
+{
+  "name": "pipiwyg/sabl-core",
+  "description": "Simple Address Book Library - Core - Composer Package",
+  "homepage": "https://pip.co.za",
+  "type": "library",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Quintin Stoltz",
+      "email": "qstoltz@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.3"
+  },
+  "require-dev": {
+    "illuminate/support": "^8.75"
+  },
+  "autoload": {
+    "psr-4": {
+      "PipIWYG\\SablCore\\": "src"
+    }
+  }
+}
