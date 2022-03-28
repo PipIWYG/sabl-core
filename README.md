@@ -12,7 +12,7 @@ commands to run to load the package library from source control in a standard La
 
 Furthermore, to load the package source from repository, it is assumed that a valid GitHub SSH key is generated on
 the system where the package is being installed. Alternatively, without an Github SSH Key, the repository reference
-URL to use to install the package may need to change as indicacted.
+URL to use to install the package may need to change from SSH to HTTPS.
 
 The package was created to make use of PHP 7.3 on a Linux/Ubuntu Server environment making use of a local MySQL
 Server Database.
@@ -57,7 +57,7 @@ no .env file have been automatically created during the laravel installation, co
 directory to .env and then edit the environment file.
 
 ```
-nano .env
+$ nano .env
 ```
 
 For this example, only the Database credentials needs to be updated in the environment configuration:
@@ -72,10 +72,21 @@ DB_PASSWORD=**YOUR_DB_PASS**
 
 Save the file and close the editor.
 
-Next, run the following commands to include and install the package repository from source control
+Next, run the following commands to include and install the package repository from source control.
+
+NOTE: If no repository SSH key exists to load the library source during installation, make use of the HTTPS section below
+instead of the SSH section
+
+**SSH**
 ```
-composer config repositories.pipiwyg vcs git@github.com:PipIWYG/sabl-core.git
-composer require pipiwyg/sabl-core:dev-develop
+$ composer config repositories.pipiwyg vcs git@github.com:PipIWYG/sabl-core.git
+$ composer require pipiwyg/sabl-core:dev-develop
+```
+
+**HTTPS**
+```
+$ composer config repositories.pipiwyg vcs https://github.com/PipIWYG/sabl-core.git
+$ composer require pipiwyg/sabl-core:dev-develop
 ```
 
 ### Database Migrations
