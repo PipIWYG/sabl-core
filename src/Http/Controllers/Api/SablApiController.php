@@ -464,6 +464,70 @@ class SablApiController
     }
 
     /**
+     * Search Address Book by first name, last name or email
+     * @return array
+     */
+    private function search_address_book() : array
+    {
+        // Get Request Data and attempt to apply some minimal validation for empty values
+        $request_data = request()->only(['query','type']);
+        if (empty($request_data) || (!isset($request_data['query']) || !isset($request_data['type']))) {
+            return $this->generateResponse('Invalid Request Input Parameters');
+        }
+
+        // Get query Validate for Empty
+        $query = trim($request_data['query']);
+        if (empty($query)) {
+            return $this->generateResponse('A query is required to search records');
+        }
+
+        // Get type Validate for Empty
+        $type = trim($request_data['type']);
+        if (empty($type)) {
+            return $this->generateResponse('A query type is required to search records');
+        }
+
+        // Define initial Result Array
+        $query_results = [];
+        switch ($type) {
+            case "email":
+                // Query Address Book Data on Relationship Objects
+                $query_results = AddressBook::with(['contacts' => function($q) use ($query) {
+                    $q->with(['email_addresses' => function($q) use($query) {
+                        $q->where('email_address','like', '%'.$query.'%');
+                    }])->whereHas('email_addresses', function($q) use ($query) {
+                        $q->where('email_address','like', '%'.$query.'%');
+                    });
+                }])->whereHas('contacts', function($q) use ($query) {
+                    $q->with(['email_addresses' => function($q) use($query) {
+                        $q->where('email_address','like', '%'.$query.'%');
+                    }])->whereHas('email_addresses', function($q) use ($query) {
+                        $q->where('email_address','like', '%'.$query.'%');
+                    });
+                })->get();
+                break;
+
+            case "contact":
+                // Query Address Book Data on Relationship Objects
+                $query_results = AddressBook::with(['contacts' => function($q) use ($query) {
+                    $q->where('first_name','like', '%'.$query.'%')
+                        ->orWhere('last_name','like','%'.$query.'%');
+                }])->whereHas('contacts', function($q) use ($query) {
+                    $q->where('first_name','like', '%'.$query.'%')
+                        ->orWhere('last_name','like','%'.$query.'%');
+                })->get();
+                break;
+
+            default:
+                return $this->generateResponse('Invalid Query Type Parameter',
+                    Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        // Return Generated Response including data
+        return $this->generateResponse('Request Successful', Response::HTTP_OK, $query_results->toArray());
+    }
+
+    /**
      * handleApiQuery
      *
      * @param null|string $query The request scope query
@@ -478,6 +542,19 @@ class SablApiController
 
         // Toggle Query
         switch(strtolower(trim($query))) {
+            case "find":
+                // Toggle Request Methods to decide how to deal with the request data
+                switch ($request_method) {
+                    case "POST":
+                        return $this->respondToRequest($this->search_address_book());
+
+                    default:
+                        return $this->respondToRequest(
+                            $this->generateResponse('Invalid Request Method for the specified API Endpoint entity.',
+                                Response::HTTP_METHOD_NOT_ALLOWED));
+                }
+                break;
+
             case "address_book":
                 // Toggle Request Methods to decide how to deal with the request data
                 switch ($request_method) {
