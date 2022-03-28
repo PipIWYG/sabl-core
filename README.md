@@ -1,25 +1,23 @@
-# Description
+# Simple Address Book Library - Core
 
-This repository contains a composer package library that can be included in a standard Laravel Installation by defining the package reference in the Laravel Application composer.json file. The package
-provides functionality that defines the API Routes available for use to query Address Book data through an API Client such as Postman. Limited data validation is in place in an attempt to keep it as simple as
-possible and to move through project requirements as quickly as possible.
+This repository contains a composer package library that can be included Laravel Installation. The package
+provides functionality that defines the database migrations and API routes available for use to manage and maintain
+Address Book data through an API Client such as Postman. Limited data validation is in place in an attempt to keep
+it as simple as possible for demonstration purposes.
 
 ## Assumptions
+It is assumed that the system where this package is installed on is correctly configured to host a Laravel Web
+Application. This documentaion details the most basic installation requirements to install Laravel and the 
+commands to run to load the package library from source control in a standard Laravel Application.
 
-It is assumed that the system where this package is used, is already configured to host a Laravel Web Application. This package and it's documentaion does not detail the steps required to configure a web
-server to serve the application through. It is further assumed that the system where this package is installed on, is correctly configured to make use of Composer and all required PHP modules. The package was
-created to make use of PHP 7.3 on a Linux/Ubuntu Server environment running Apache 2 and MySQL. All other Apache configuration, such as mod_rewrite and mod_headers must be installed and enabled as per the
-requirements to run a Laravel Based web application. Please see https://laravel.com/docs/9.x/installation for Laravel installation instructions.
+Furthermore, to load the package source from repository, it is assumed that a valid GitHub SSH key is generated on
+the system where the package is being installed. Alternatively, without an Github SSH Key, the repository reference
+URL to use to install the package may need to change as indicacted.
 
-Furthermore, to load the package source from repository, it is assumed that a valid github SSH key is generated on the system where the package is being installed. Failure to load the package from repository may be caused by an invalid GitHub SSH Key.
+The package was created to make use of PHP 7.3 on a Linux/Ubuntu Server environment making use of a local MySQL
+Server Database.
 
-Finally, the commands and instructions in this file assumes that the package and application is configured on Ubuntu. Alternative commands must be used if another OS environment is used.
-
-
-## REF:
-composer create-project laravel/laravel example-app
-cd example-app
-php artisan serve
+For detailed instructions on how to install Laravel, please see https://laravel.com/docs/9.x/installation.
 
 ## Installation
 
@@ -36,9 +34,10 @@ Create a new Laravel Web Application using composer:
 
 ```
 composer create-project laravel/laravel example-app
+cd example-app
 ```
 
-Once the composer Laravel installation has completed, create a new MySQL database schema:
+Once the composer Laravel installation has completed, create a new MySQL database schema to host application data.
 ```
 mysql -uroot -p
 Enter password: 
@@ -53,63 +52,49 @@ mysql> quit;
 Bye
 ```
 
-Next, edit the generated environment file (.env) to update the database credentials and schema information:
+Next, edit the generated environment file (.env) to update the database credentials and schema information. Should 
+no .env file have been automatically created during the laravel installation, copy the .env.example file in the root
+directory to .env and then edit the environment file.
 
 ```
-cd example-app
 nano .env
 ```
 
-For this example, only the Database credentials needs to be updated:
+For this example, only the Database credentials needs to be updated in the environment configuration:
 ```
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=sabl
-DB_USERNAME=**DB_USER**
-DB_PASSWORD=**DB_PASS**
+DB_USERNAME=**YOUR_DB_USER**
+DB_PASSWORD=**YOUR_DB_PASS**
 ```
 
 Save the file and close the editor.
 
-Once the above has been done, and you are able to access the web application through a web browser, run the following command to include the package repository:
-
+Next, run the following commands to include and install the package repository from source control
 ```
-composer config repositories.pipiwyg vcs https://github.com/PipIWYG/relmaor.git
-```
-
-Save and close the file, and run the following command to include the package in the "requires" configuration key:
-```
-composer require pipiwyg/relmaor:1.2
-```
-
-### Package Discovery / Laravel Service Provider
-
-It is possible to load the package service provider directly through composer, without the requirement of making changes to the root application configuration files. At the time of writing, package auto-discovery
-failed to load the provider directly, if only defined in composer.json. An alternative to load the package service provider is to add the provider namespace to the application configuration file. To do this, do the follow:
-
-```
-nano config/app.php
-```
-
-Add the service provider to the providers array in this file:
-```
-'providers' => [
-    ...
-    PipIWYG\Roamler\RoamlerAppServiceProvider::class,
-    ...
-]
+composer config repositories.pipiwyg vcs git@github.com/PipIWYG/sabl-core.git
+composer require pipiwyg/sabl-core:dev-develop
 ```
 
 ### Database Migrations
 
-To make use of the package functionality, you must first run the database migrations, to create the required database tables. In the root of the application directory, run the following
+To make use of the package functionality, run the database migrations to create the required database tables. In the 
+root of the application directory, run the following
 
 ```
 php artisan migrate
 ```
 
-Once the database migrations have executed without error, you may use an API client such as postman to create and query database records.
+Once the database migrations have executed without error, you may use an API client such as postman to create and query 
+database records. Serve the application to be able to access the App through a web browser, or to use an API client. 
+Once the application is accessible through a web browser, see the usage instructions below for details on how to make
+use of the package functionality
+
+```
+php artisan serve
+```
 
 ### Usage
 
