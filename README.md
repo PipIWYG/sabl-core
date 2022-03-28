@@ -33,13 +33,13 @@ The most basic environment specific configuration should be enough for this pack
 Create a new Laravel Web Application using composer:
 
 ```
-composer create-project laravel/laravel example-app
-cd example-app
+$ composer create-project laravel/laravel example-app
+$ cd example-app
 ```
 
 Once the composer Laravel installation has completed, create a new MySQL database schema to host application data.
 ```
-mysql -uroot -p
+$ mysql -uroot -p
 Enter password: 
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 6222
@@ -74,7 +74,7 @@ Save the file and close the editor.
 
 Next, run the following commands to include and install the package repository from source control
 ```
-composer config repositories.pipiwyg vcs git@github.com/PipIWYG/sabl-core.git
+composer config repositories.pipiwyg vcs git@github.com:PipIWYG/sabl-core.git
 composer require pipiwyg/sabl-core:dev-develop
 ```
 
