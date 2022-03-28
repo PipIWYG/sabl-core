@@ -11,14 +11,19 @@
     }
   ],
   "require": {
-    "php": "^7.3"
-  },
-  "require-dev": {
+    "php": "^7.3",
     "illuminate/support": "^8.75"
   },
   "autoload": {
     "psr-4": {
-      "PipIWYG\\SablCore\\": "src"
+      "PipIWYG\\SablCore\\": "src/"
     }
+  },
+  "extra": {
+      "laravel": {
+        "providers": [
+          "PipIWYG\\SablCore\\SablCoreServiceProvider"
+        ]
+      }
   }
 }

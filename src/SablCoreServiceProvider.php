@@ -1,8 +1,6 @@
 <?php
 namespace PipIWYG\SablCore;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -14,13 +12,6 @@ use Illuminate\Support\ServiceProvider;
 class SablCoreServiceProvider
     extends ServiceProvider
 {
-    /**
-     * Console Command Definitions
-     *
-     * @var array
-     */
-    protected $commands = [];
-
     /**
      * Bootstrap the application services.
      *
@@ -34,16 +25,24 @@ class SablCoreServiceProvider
             $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
         }
 
+//        if (app()->runningInConsole()) {
+//            $this->registerMigrations();
+//
+//            $this->publishes([
+//                __DIR__.'/../database/migrations' => database_path('migrations'),
+//            ], 'sanctum-migrations');
+//
+//            $this->publishes([
+//                __DIR__.'/../config/sanctum.php' => config_path('sanctum.php'),
+//            ], 'sanctum-config');
+//        }
+//
+//        $this->defineRoutes();
+//        $this->configureGuard();
+//        $this->configureMiddleware();
+
+
 	// Migrations
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-    }
-
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
     }
 }
