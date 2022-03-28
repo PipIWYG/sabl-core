@@ -13,25 +13,34 @@ class CreateContactTable extends Migration
      */
     public function up()
     {
+        // Create the Contact Database Table
         Schema::create('contact', function (Blueprint $table)
-	{
-            $table->increments('id')->comment = "Table Auto Increment ID";
+	    {
+            $table->increments('id')
+                ->comment = "Table Auto Increment ID";
+
+            // Relationship Index to AddressBook
             $table->integer('ab_id')
+                ->unsigned()
                 ->index()
                 ->comment = "Relationship on Address Book / Group";
+
+            // Contact Specific Data Fields
             $table->string('first_name',64)
-		->index()
-		->comment = "First Name";
+		        ->index()
+		        ->comment = "First Name";
             $table->string('last_name',64)
-		->index()
-		->comment = "Last Name";
+		        ->index()
+		        ->comment = "Last Name";
 
             // Add Table Timestamps, including deleted_at for soft-deletes
             $table->timestamp('created_at')
                 ->index();
             $table->timestamp('updated_at')
+                ->nullable()
                 ->index();
             $table->timestamp('deleted_at')
+                ->nullable()
                 ->index();
         });
     }

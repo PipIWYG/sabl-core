@@ -5,12 +5,12 @@ use Illuminate\Database\Eloquent\Model as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Email Address Model Object to manage CRUD operations for Email Address Data
+ * Contact Group or Address Book Model Object to manage CRUD operations for Address Book / Contact Group data
  *
  * @package PipIWYG\SablCore\Models
  * @author Quintin Stoltz <qstoltz@gmail.com>
  */
-class EmailAddress
+class AddressBook
     extends Model
 {
     /**
@@ -25,26 +25,20 @@ class EmailAddress
      *
      * @var string
      */
-    protected $table = 'email_address';
+    protected $table = 'address_book';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['contact_id', 'email_address'];
+    protected $fillable = ['name'];
 
     /**
-     * The relationships that should be touched on save.
-     * @var string[]
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    protected $touches = ['contact'];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function contact()
+    public function contacts()
     {
-        return $this->belongsTo('PipIWYG\SablCore\Models\Contact','contact_id','id');
+        return $this->hasMany('PipIWYG\SablCore\Models\Contact','ab_id','id');
     }
 }

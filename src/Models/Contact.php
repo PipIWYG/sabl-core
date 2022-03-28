@@ -1,18 +1,25 @@
 <?php
-
-namespace PipIWYG\Roamler\Models;
+namespace PipIWYG\SablCore\Models;
 
 use Illuminate\Database\Eloquent\Model as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Contact Model Object to Capture and Query Contact Data, with additional relationship object model definitions
+ * Contact Model Object to manage CRUD operations for Contact Data
  *
- * @package PipIWYG\Roamler\Models
+ * @package PipIWYG\SablCore\Models
  * @author Quintin Stoltz <qstoltz@gmail.com>
  */
 class Contact
     extends Model
 {
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = true;
+
     /**
      * The database table used by the model.
      *
@@ -25,7 +32,13 @@ class Contact
      *
      * @var array
      */
-    protected $fillable = ['first_name', 'last_name', 'group_id'];
+    protected $fillable = ['ab_id', 'first_name', 'last_name'];
+
+    /**
+     * The relationships that should be touched on save.
+     * @var string[]
+     */
+    protected $touches = ['address_book'];
 
     /**
      * Relationship Record on Address
@@ -33,7 +46,7 @@ class Contact
      */
     public function addresses()
     {
-        return $this->hasMany('PipIWYG\Roamler\Models\Address','contact_id','id');
+        return $this->hasMany('PipIWYG\SablCore\Models\Address','contact_id','id');
     }
 
     /**
@@ -42,7 +55,7 @@ class Contact
      */
     public function email_addresses()
     {
-        return $this->hasMany('PipIWYG\Roamler\Models\EmailAddress','contact_id','id');
+        return $this->hasMany('PipIWYG\SablCore\Models\EmailAddress','contact_id','id');
     }
 
     /**
@@ -51,14 +64,15 @@ class Contact
      */
     public function phone_numbers()
     {
-        return $this->hasMany('PipIWYG\Roamler\Models\PhoneNumber','contact_id','id');
+        return $this->hasMany('PipIWYG\SablCore\Models\PhoneNumber','contact_id','id');
     }
 
     /**
+     * Relationship Record on Address Book
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function group()
+    public function address_book()
     {
-        return $this->belongsTo('PipIWYG\Roamler\Models\ContactGroup','group_id','id');
+        return $this->belongsTo('PipIWYG\SablCore\Models\AddressBook','ab_id','id');
     }
 }

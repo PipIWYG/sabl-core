@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePhoneNumberTable extends Migration
+class CreateEmailAddressTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,31 @@ class CreatePhoneNumberTable extends Migration
      */
     public function up()
     {
-        Schema::create('phone_number', function (Blueprint $table) {
-            $table->increments('id')->comment = "Table Auto Increment ID";
+        // Create the Email Address Database Table
+        Schema::create('email_address', function (Blueprint $table)
+        {
+            $table->increments('id')
+                ->comment = "Table Auto Increment ID";
+
+            // Relationship Index to Contact
             $table->integer('contact_id')
+                ->unsigned()
                 ->index()
                 ->comment = "Relationship to Contact";
-            $table->string('phone_number')
-		->index()
-		->comment = "Phone Number";
 
-	    // Add Table Timestamps, including deleted_at for soft-deletes
+            // Email Address Specific Data Fields
+            $table->string('email_address')
+		        ->index()
+		        ->comment = "Email Address";
+
+            // Add Table Timestamps, including deleted_at for soft-deletes
             $table->timestamp('created_at')
                 ->index();
             $table->timestamp('updated_at')
+                ->nullable()
                 ->index();
             $table->timestamp('deleted_at')
+                ->nullable()
                 ->index();
         });
     }
@@ -39,6 +49,6 @@ class CreatePhoneNumberTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('phone_number');
+        Schema::dropIfExists('email_address');
     }
 }

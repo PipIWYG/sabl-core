@@ -13,18 +13,25 @@ class CreateAddressBookTable extends Migration
      */
     public function up()
     {
+        // Create the Address Book Database Table
         Schema::create('address_book', function (Blueprint $table)
-	{
-            $table->increments('id')->comment = "Table Auto Increment ID";
-            $table->string('name',64)->comment = "Address Book Name or Group";
+	    {
+            $table->increments('id')
+                ->comment = "Table Auto Increment ID";
 
-	    // Add Table Timestamps, including deleted_at for soft-deletes
-	    $table->timestamp('created_at')
-		->index();
-	    $table->timestamp('updated_at')
-		->index();
-	    $table->timestamp('deleted_at')
-		->index();
+            // Address Book Specific Data Fields
+            $table->string('name',64)
+                ->comment = "Address Book Name or Group";
+
+            // Add Table Timestamps, including deleted_at for soft-deletes
+            $table->timestamp('created_at')
+                ->index();
+            $table->timestamp('updated_at')
+                ->nullable()
+                ->index();
+            $table->timestamp('deleted_at')
+                ->nullable()
+                ->index();
         });
     }
 

@@ -19,30 +19,38 @@ class SablCoreServiceProvider
      */
     public function boot()
     {
-        // Routes
-        if (!$this->app->routesAreCached()) {
-            // Load routes from...
-            $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
+        // Check for Console Mode
+        if (app()->runningInConsole()) {
+            // Register Package Migrations
+            $this->registerMigrations();
         }
+        // Load and Define Package Routes
+        $this->defineRoutes();
+    }
 
-//        if (app()->runningInConsole()) {
-//            $this->registerMigrations();
-//
-//            $this->publishes([
-//                __DIR__.'/../database/migrations' => database_path('migrations'),
-//            ], 'sanctum-migrations');
-//
-//            $this->publishes([
-//                __DIR__.'/../config/sanctum.php' => config_path('sanctum.php'),
-//            ], 'sanctum-config');
-//        }
-//
-//        $this->defineRoutes();
-//        $this->configureGuard();
-//        $this->configureMiddleware();
+    /**
+     * Register Package migration files.
+     *
+     * @return void
+     */
+    protected function registerMigrations()
+    {
+        // Load Migrations from...
+        return $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+    }
 
-
-	// Migrations
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+    /**
+     * Define the package routes.
+     *
+     * @return void
+     */
+    protected function defineRoutes()
+    {
+        // Check for cached routes
+        if (app()->routesAreCached()) {
+            return;
+        }
+        // Load routes from...
+        $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
     }
 }
