@@ -80,13 +80,13 @@ instead of the SSH section
 **SSH**
 ```
 $ composer config repositories.pipiwyg vcs git@github.com:PipIWYG/sabl-core.git
-$ composer require pipiwyg/sabl-core:dev-develop
+$ composer require pipiwyg/sabl-core:1.0
 ```
 
 **HTTPS**
 ```
 $ composer config repositories.pipiwyg vcs https://github.com/PipIWYG/sabl-core.git
-$ composer require pipiwyg/sabl-core:dev-develop
+$ composer require pipiwyg/sabl-core:1.0
 ```
 
 ### Database Migrations
