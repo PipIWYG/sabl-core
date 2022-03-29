@@ -80,13 +80,13 @@ instead of the SSH section
 **SSH**
 ```
 $ composer config repositories.pipiwyg vcs git@github.com:PipIWYG/sabl-core.git
-$ composer require pipiwyg/sabl-core:1.0
+$ composer require pipiwyg/sabl-core:1.1
 ```
 
 **HTTPS**
 ```
 $ composer config repositories.pipiwyg vcs https://github.com/PipIWYG/sabl-core.git
-$ composer require pipiwyg/sabl-core:1.0
+$ composer require pipiwyg/sabl-core:1.1
 ```
 
 ### Database Migrations
@@ -421,3 +421,83 @@ Request Data
 ```
 The above request will query contacts with a first name or last name containing 'lichten'
 
+### Unit Tests
+
+The package unit tests can be executed, provided that Unit Tests are correctly configured in the Root Application.
+This configuration directives are not currently included within the package source, but test cases have been created in
+support of the correct unit testing configuration.
+
+Laravel makes use of SQLite to run Unit Tests on data in Memory. To get this to work correctly, follow these steps.
+
+First, make sure that the PHP SQLite Module is installed on the target system
+```
+apt install php7.3-sqlite3
+```
+Next, update the database configuration file, and define the SQLite connection to reflect in-memory unit tests
+```
+nano config/database.php
+``` 
+
+```
+...
+'connections' => [
+    'sqlite' => [
+        'driver' => 'sqlite',
+        'database' => ':memory:',
+        'prefix' => '',
+    ]
+],
+...
+```
+Then enable SQLite in phpunit.xml by adding the environment variable `DB_CONNECTION`:
+```
+    ...
+    <php>
+        <server name="APP_ENV" value="testing"/>
+        <server name="DB_CONNECTION" value="sqlite"/>
+        ...
+    </php>
+    ...
+```
+
+With that out of the way, all that's left is configuring the base TestCase class to use migrations and seed the database before each test. To do so, add the `DatabaseMigrations` trait, and then add an Artisan call on the `setUp()` method:
+
+```
+<?php
+
+namespace Tests;
+
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+
+abstract class TestCase extends BaseTestCase
+{
+    use CreatesApplication, DatabaseMigrations;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        Artisan::call('db:seed --class=AddressBookSeeder');
+    }
+}
+```
+
+Optionally, you can also add the test command to `composer.json` to make it easier to call phpunit to run test cases:
+
+```
+    ...
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit"
+        ], 
+        ...
+    },
+    ...
+```
+
+The test command will be available like this:
+
+```
+$ composer test
+```
