@@ -36,4 +36,15 @@ class Groups
      * @var array
      */
     protected $fillable = ['name'];
+
+    /**
+     * Contacts can have multiple groups
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function contacts()
+    {
+        // Return Model Relation
+        return $this->belongsToMany('PipIWYG\SablCore\Models\Contact');
+    }
 }

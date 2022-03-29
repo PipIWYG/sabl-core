@@ -7,6 +7,7 @@ use PipIWYG\SablCore\Models\Address;
 use PipIWYG\SablCore\Models\Contact;
 use PipIWYG\SablCore\Models\AddressBook;
 use PipIWYG\SablCore\Models\EmailAddress;
+use PipIWYG\SablCore\Models\Groups;
 use PipIWYG\SablCore\Models\PhoneNumber;
 use Illuminate\Support\Facades\Log;
 
@@ -41,16 +42,23 @@ class SablApiController
 
         try {
             // Create new Record
-            AddressBook::create([
+            $record = AddressBook::create([
                 'name' => $address_book_name
             ]);
+            
             // Return successful response
-            return $this->generateResponse('Address Book Record Successfully Created',Response::HTTP_OK);
+            return $this->generateResponse(
+                'Address Book Record Successfully Created',
+                Response::HTTP_CREATED,
+                $record->toArray());
+            
         } catch(\Exception $e) {
             // Log for visibility
             Log::error($e->getMessage());
-            // Return response to include message from exception (Not advised under normal curcumstances
-            return $this->generateResponse($e->getMessage(), $e->getCode());
+
+            // Return response with Error
+            return $this->generateResponse("A server error occured. Data could not be processed.",
+                Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -127,21 +135,24 @@ class SablApiController
 
         try {
             // Create new Record
-            Contact::create([
+            $record = Contact::create([
                 'first_name' => $first_name,
                 'last_name' => $last_name,
                 'ab_id' => $address_book_id
             ]);
 
             // Return successful response
-            return $this->generateResponse('Contact Record Successfully Created',Response::HTTP_OK);
-        } catch(\Exception $e) {
+            return $this->generateResponse('Contact Record Successfully Created',
+                Response::HTTP_CREATED,
+                $record->toArray());
 
+        } catch(\Exception $e) {
             // Log for visibility
             Log::error($e->getMessage());
 
-            // Return response to include message from exception (Not advised under normal curcumstances
-            return $this->generateResponse($e->getMessage(), $e->getCode());
+            // Return response with Error
+            return $this->generateResponse("A server error occured. Data could not be processed.",
+                Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -232,7 +243,7 @@ class SablApiController
 
         try {
             // Create Record
-            Address::create([
+            $record = Address::create([
                 'contact_id' => $contact_id,
                 'street_address_primary' => $street_address_primary,
                 'street_address_secondary' => $street_address_secondary,
@@ -241,15 +252,17 @@ class SablApiController
             ]);
 
             // Return successful response
-            return $this->generateResponse('Address Record Successfully Created',Response::HTTP_OK);
+            return $this->generateResponse('Address Record Successfully Created',
+                Response::HTTP_CREATED,
+                $record->toArray());
 
         } catch(\Exception $e) {
-
             // Log for visibility
             Log::error($e->getMessage());
 
-            // Return response to include message from exception (Not advised under normal curcumstances
-            return $this->generateResponse($e->getMessage(), $e->getCode());
+            // Return response with Error
+            return $this->generateResponse("A server error occured. Data could not be processed.",
+                Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -318,23 +331,24 @@ class SablApiController
         }
 
         try {
-
             // Create Record
-            EmailAddress::create([
+            $record = EmailAddress::create([
                 'contact_id' => $contact_id,
                 'email_address' => $email_address,
             ]);
 
             // Return successful response
-            return $this->generateResponse('Email Address Record Successfully Created',Response::HTTP_OK);
+            return $this->generateResponse('Email Address Record Successfully Created',
+                Response::HTTP_CREATED,
+                $record->toArray());
 
         } catch(\Exception $e) {
-
             // Log for visibility
             Log::error($e->getMessage());
 
-            // Return response to include message from exception (Not advised under normal curcumstances
-            return $this->generateResponse($e->getMessage(), $e->getCode());
+            // Return response with Error
+            return $this->generateResponse("A server error occured. Data could not be processed.",
+                Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -403,23 +417,24 @@ class SablApiController
         }
 
         try {
-
             // Create Record
-            PhoneNumber::create([
+            $record = PhoneNumber::create([
                 'contact_id' => $contact_id,
                 'phone_number' => $phone_number,
             ]);
 
             // Return successful response
-            return $this->generateResponse('Phone Number Record Successfully Created',Response::HTTP_OK);
+            return $this->generateResponse('Phone Number Record Successfully Created',
+                Response::HTTP_CREATED,
+                $record->toArray());
 
         } catch(\Exception $e) {
-
             // Log for visibility
             Log::error($e->getMessage());
 
-            // Return response to include message from exception (Not advised under normal curcumstances
-            return $this->generateResponse($e->getMessage(), $e->getCode());
+            // Return response with Error
+            return $this->generateResponse("A server error occured. Data could not be processed.",
+                Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -462,6 +477,190 @@ class SablApiController
         // Return Generated Response including data
         return $this->generateResponse('Request Successful', Response::HTTP_OK, $result->toArray());
     }
+
+    /**
+     * Create a new group record
+     * @return array
+     */
+    private function group_create() : array
+    {
+        // Get Request Data and attempt to apply some minimal validation for empty values
+        $request_data = request()->only(['name']);
+        if (empty($request_data) || (!isset($request_data['name']))) {
+            return $this->generateResponse('Invalid Request Input Parameters');
+        }
+
+        // Get first name and validate for Empty
+        $group_name = trim($request_data['name']);
+        if (empty($group_name)) {
+            return $this->generateResponse('A valid group name is required to create a new group.');
+        }
+
+        try {
+            // Create new Record
+            $record = Groups::create([
+                'name' => $group_name
+            ]);
+
+            // Return successful response
+            return $this->generateResponse(
+                'Contact Record Successfully Created',
+                Response::HTTP_CREATED,
+                $record->toArray());
+
+        } catch(\Exception $e) {
+            // Log for visibility
+            Log::error($e->getMessage());
+
+            // Return response with Error
+            return $this->generateResponse("A server error occured. Data could not be processed.",
+                Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Query/View a group record
+     * @param $record_id
+     * @return array
+     */
+    private function group_view($record_id = null) : array
+    {
+        // Null check on record id parameter, to use this method for both POST and GET requests
+        if (null === $record_id && request()->method() === 'POST') {
+
+            // Get Request Data and attempt to apply some minimal validation for empty values
+            $request_data = request()->only(['id']);
+
+            // Basic validation for invalid input
+            if (empty($request_data) || (!isset($request_data['id']))) {
+                return $this->generateResponse('A valid record ID is required for this request.');
+            }
+
+            // Set Record ID from post request data
+            $record_id = $request_data['id'];
+        }
+
+        // Retrieve Contact ID
+        $record_id = intval($record_id);
+
+        // Query Data, including relationships
+        $result = Groups::where('id','=',$record_id)
+            ->first();
+
+        // Null check for record not found
+        if (null === $result) {
+            return $this->generateResponse('Record Not Found.',
+                Response::HTTP_NOT_FOUND);
+        }
+
+        // Return Generated Response including data
+        return $this->generateResponse('Request Successful', Response::HTTP_OK, $result->toArray());
+    }
+
+    /**
+     * Create a new contact group record
+     * @return array
+     */
+    private function contact_group_create() : array
+    {
+        // Get Request Data and attempt to apply some minimal validation for empty values
+        $request_data = request()->only(['contact_id','group_id']);
+        if (empty($request_data) || (!isset($request_data['contact_id']) || !isset($request_data['group_id']))) {
+            return $this->generateResponse('Invalid Request Input Parameters');
+        }
+
+        // Get contact_id
+        $contact_id = trim($request_data['contact_id']);
+        if (empty($contact_id)) {
+            return $this->generateResponse('A valid contact id is required to add a group to a contact.');
+        }
+        
+        // Get group_id
+        $group_id = trim($request_data['group_id']);
+        if (empty($group_id)) {
+            return $this->generateResponse('A valid group id is required to add a group to a contact.');
+        }
+
+        try {
+            // Create new Record
+            $contact_record = Contact::where('id','=',$contact_id)
+                ->first();
+
+            // Get current ids before detaching
+            $group_ids_current = $contact_record->groups()
+                ->pluck('id')
+                ->toArray();
+
+            // Check if the group id is already part of existing data
+            if (!in_array($group_id,$group_ids_current)) {
+                $group_ids_current[] = $group_id;
+            }
+
+            // Detach Contact Groups
+            $contact_record->groups()->detach();
+
+            // Attach Contact Groups
+            $contact_record->groups()->attach($group_ids_current);
+
+            // Return successful response
+            return $this->generateResponse(
+                'Contact Group Successfully Attached to Contact',
+                Response::HTTP_CREATED);
+
+        } catch(\Exception $e) {
+            // Log for visibility
+            Log::error($e->getMessage());
+
+            // Return response with Error
+            return $this->generateResponse("A server error occured. Data could not be processed.",
+                Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    /**
+     * Query/View a groups record
+     * @param $record_id
+     * @return array
+     */
+    private function contact_group_view($record_id = null) : array
+    {
+        // Null check on record id parameter, to use this method for both POST and GET requests
+        if (null === $record_id && request()->method() === 'POST') {
+
+            // Get Request Data and attempt to apply some minimal validation for empty values
+            $request_data = request()->only(['id']);
+
+            // Basic validation for invalid input
+            if (empty($request_data) || (!isset($request_data['id']))) {
+                return $this->generateResponse('A valid record ID is required for this request.');
+            }
+
+            // Set Record ID from post request data
+            $record_id = $request_data['id'];
+        }
+
+        // Retrieve Contact ID
+        $record_id = intval($record_id);
+
+        // Query Data, including relationships
+        $result = Groups::where('id','=',$record_id)
+            ->with(['contacts'])
+            ->first();
+
+        // Null check for record not found
+        if (null === $result) {
+            return $this->generateResponse('Record Not Found.',
+                Response::HTTP_NOT_FOUND);
+        }
+
+        // Return Generated Response including data
+        return $this->generateResponse('Request Successful', Response::HTTP_OK, $result->toArray());
+    }
+
+
+
+
+
 
     /**
      * Search Address Book by first name, last name or email
@@ -542,19 +741,6 @@ class SablApiController
 
         // Toggle Query
         switch(strtolower(trim($query))) {
-            case "find":
-                // Toggle Request Methods to decide how to deal with the request data
-                switch ($request_method) {
-                    case "POST":
-                        return $this->respondToRequest($this->search_address_book());
-
-                    default:
-                        return $this->respondToRequest(
-                            $this->generateResponse('Invalid Request Method for the specified API Endpoint entity.',
-                                Response::HTTP_METHOD_NOT_ALLOWED));
-                }
-                break;
-
             case "address_book":
                 // Toggle Request Methods to decide how to deal with the request data
                 switch ($request_method) {
@@ -682,6 +868,73 @@ class SablApiController
                             return $this->respondToRequest($this->phone_number_view($id));
                         }
                         return $this->respondToRequest($this->generateResponse('A contact record ID is required for this request'));
+
+                    default:
+                        return $this->respondToRequest(
+                            $this->generateResponse('Invalid Request Method for the specified API Endpoint entity.',
+                                Response::HTTP_METHOD_NOT_ALLOWED));
+                }
+                break;
+
+            case "group":
+                // Toggle Request Methods to decide how to deal with the request data
+                switch ($request_method) {
+                    case "PUT":
+                        return $this->respondToRequest($this->group_create());
+
+                    case "POST":
+                        if (null !== $id) {
+                            return $this->respondToRequest(
+                                $this->generateResponse('Invalid API Endpoint.',
+                                    Response::HTTP_BAD_REQUEST));
+                        }
+                        return $this->respondToRequest($this->group_view());
+
+                    case "GET":
+                        if (null !== $id) {
+                            return $this->respondToRequest($this->group_view($id));
+                        }
+                        return $this->respondToRequest($this->generateResponse('A contact record ID is required for this request'));
+
+                    default:
+                        return $this->respondToRequest(
+                            $this->generateResponse('Invalid Request Method for the specified API Endpoint entity.',
+                                Response::HTTP_METHOD_NOT_ALLOWED));
+                }
+                break;
+
+            case "contact_group":
+                // Toggle Request Methods to decide how to deal with the request data
+                switch ($request_method) {
+                    case "PUT":
+                        return $this->respondToRequest($this->contact_group_create());
+
+                    case "POST":
+                        if (null !== $id) {
+                            return $this->respondToRequest(
+                                $this->generateResponse('Invalid API Endpoint.',
+                                    Response::HTTP_BAD_REQUEST));
+                        }
+                        return $this->respondToRequest($this->contact_group_view());
+
+                    case "GET":
+                        if (null !== $id) {
+                            return $this->respondToRequest($this->contact_group_view($id));
+                        }
+                        return $this->respondToRequest($this->generateResponse('A contact record ID is required for this request'));
+
+                    default:
+                        return $this->respondToRequest(
+                            $this->generateResponse('Invalid Request Method for the specified API Endpoint entity.',
+                                Response::HTTP_METHOD_NOT_ALLOWED));
+                }
+                break;
+
+            case "find":
+                // Toggle Request Methods to decide how to deal with the request data
+                switch ($request_method) {
+                    case "POST":
+                        return $this->respondToRequest($this->search_address_book());
 
                     default:
                         return $this->respondToRequest(

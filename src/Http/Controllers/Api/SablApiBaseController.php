@@ -19,7 +19,7 @@ abstract class SablApiBaseController
     {
         // Define Initial Result
         $result = [
-            'success' => ($code === Response::HTTP_OK),
+            'success' => ($code === Response::HTTP_OK || $code === Response::HTTP_CREATED),
             'message' => $message,
             'code' => $code,
         ];
