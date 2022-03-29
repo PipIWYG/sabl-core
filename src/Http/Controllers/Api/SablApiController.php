@@ -172,7 +172,7 @@ class SablApiController
 
         // Query Data, including relationships
         $result = Contact::where('id','=',$record_id)
-            ->with(['addresses','email_addresses','phone_numbers','address_book'])
+            ->with(['addresses','email_addresses','phone_numbers','address_book','groups'])
             ->first();
 
         // Null check for record not found

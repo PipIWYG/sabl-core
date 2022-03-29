@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class AddressBook
     extends Model
 {
+    // Use SoftDeletes
+    use SoftDeletes;
+
     /**
      * Indicates if the model should be timestamped.
      *

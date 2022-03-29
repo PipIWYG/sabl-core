@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Contact
     extends Model
 {
+    // Use SoftDeletes
+    use SoftDeletes;
+
     /**
      * Indicates if the model should be timestamped.
      *
@@ -74,5 +77,16 @@ class Contact
     public function address_book()
     {
         return $this->belongsTo('PipIWYG\SablCore\Models\AddressBook','ab_id','id');
+    }
+
+    /**
+     * Contacts can have multiple groups
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function groups()
+    {
+        // Return Model Relation
+        return $this->belongsToMany('PipIWYG\SablCore\Models\Groups');
     }
 }
