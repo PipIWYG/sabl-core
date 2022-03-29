@@ -657,11 +657,6 @@ class SablApiController
         return $this->generateResponse('Request Successful', Response::HTTP_OK, $result->toArray());
     }
 
-
-
-
-
-
     /**
      * Search Address Book by first name, last name or email
      * @return array

@@ -109,189 +109,315 @@ php artisan serve
 
 ### Usage
 
-Making use of an API Client or similar, define the API Endpoint URI to create the Contact Group records:
+Making use of an API Client or similar, define the API Endpoint URI to create or query record data.
 
-```
-Method: POST
-URI: http://**APPHOST**/api/v1/contact_group/create
-```
+--------------------
+#### Request Methods (VERBS)
+**POST**
 
-#### Request Input Data
+The POST request method is used to Query Record Data for all available endpoint URIs, and requires request input data specifying the record ID to query
 
-Specify the request input data to create a new contact group, by setting the body of the request to raw JSON format. Then define the request data as follows:
+Example: `Endpoint URI: /api/v1/address_book`
 ```
 {
-    "group_name": "Private"
+    "id": 1
+}
+```
+The above request will return data for an address book record with ID:1
+
+**GET**
+
+The GET request method is used to Query Record Data for all available endpoint URIs, and requires a record ID defined in the Request Endpoint URI.
+
+Example: `Endpoint URI: /api/v1/address_book/1`
+
+The above request will return data for an address book record with ID:1
+
+**PUT**
+
+The PUT request method is used to Create Record Data for all available endpoint URIs, and requires record input data with the correct paraneters.
+
+Example: `Endpoint URI: /api/v1/address_book`
+
+```
+{
+    "name": "Private Address Book"
 }
 ```
 
-Submit the request to retrieve response. If the request was successful, response will indicate success. Add an additional Contact Group for example purposes:
+The above request will create a Address Book record with a name of "Private Address Book"
+
+--------------------
+### Available Endpoints and Request Examples
+
+Specify the request input data to create a new contact group, by setting the body of the request to raw JSON format.
+
+```
+Endpoint: /api/v1/address_book
+Request Method: PUT
+```
+
+Request Data
 ```
 {
-    "group_name": "Work"
+    "name": "Private Address Book"
 }
 ```
-
-At the time of writing, limited functionality is available to know what the group IDs are, however, the above two requests should have created 2 new Contact Group records in your database, with IDs 1, and 2.
-
-To capture a new contact for a specific group, use the following:
+The above request will create a new Address Book record
 
 ```
-Method: POST
-URI: http://**APPHOST**/api/v1/contact/create
+Endpoint: /api/v1/address_book
+Request Method: POST
 ```
 
-Private Contact Group Input:
+Request Data
 ```
 {
-    "first_name": "Private Test",
-    "last_name": "Person",
-    "group_id": 1
+    "id": 1
 }
 ```
+The above request will return record data for Address Book record ID 1
 
-Work Contact Group Input:
+```
+Endpoint: /api/v1/address_book/1
+Request Method: GET
+```
+
+The above request will return record data for Address Book record ID 1
+
+```
+Endpoint: /api/v1/contact
+Request Method: PUT
+```
+
+Request Data
 ```
 {
-    "first_name": "Work Test",
-    "last_name": "Person",
-    "group_id": 2
+    "first_name": "Peter",
+    "last_name": "von Lichtenstein",
+    "address_book_id": 1
 }
 ```
-
-To capture contact email address, use the following:
+The above request will create a new Contact record in Address Book with ID 1
 
 ```
-Method: POST
-URI: http://**APPHOST**/api/v1/email_address/create
+Endpoint: /api/v1/contact
+Request Method: POST
 ```
 
-Email Address Capture Input:
+Request Data
 ```
 {
-    "email_address": "me@me.com",
-    "contact_id": 1
+    "id": 1
 }
 ```
+The above request will return record data for Contact record ID 1
 
+```
+Endpoint: /api/v1/contact/1
+Request Method: GET
+```
+
+The above request will return record data for Contact record ID 1
+
+```
+Endpoint: /api/v1/address
+Request Method: PUT
+```
+
+Request Data
 ```
 {
-    "email_address": "me@you.com",
-    "contact_id": 1
-}
-```
-
-```
-{
-    "email_address": "me@work.com",
-    "contact_id": 2
-}
-```
-
-```
-{
-    "email_address": "you@work.com",
-    "contact_id": 2
-}
-```
-
-To capture contact phone numbers, use the following:
-
-```
-Method: POST
-URI: http://**APPHOST**/api/v1/phone_number/create
-```
-
-Phone Number Capture Input:
-```
-{
-    "phone_number": "+27214804321",
-    "contact_id": 1
-}
-```
-
-```
-{
-    "phone_number": "+27662834321",
-    "contact_id": 1
-}
-```
-
-```
-{
-    "phone_number": "+27214212212",
-    "contact_id": 2
-}
-```
-
-```
-{
-    "phone_number": "+27662832222",
-    "contact_id": 2
-}
-```
-
-To capture address data, use the following:
-
-```
-Method: POST
-URI: http://**APPHOST**/api/v1/address/create
-```
-
-Address Capture Input:
-```
-{
-    "street_address": "27 Montague Avenue",
-    "city": "Johannesburg",
-    "country": "South Africa",
-    "contact_id": 1
-}
-```
-
-```
-{
-    "street_address": "19 Baltimore Street",
+    "street_address_primary": "109 Westside Studios",
+    "street_address_secondary": "Buitengracht Street",
     "city": "Cape Town",
     "country": "South Africa",
     "contact_id": 1
 }
 ```
+The above request will create a new Address record for a contact record with ID 1
 
 ```
+Endpoint: /api/v1/address
+Request Method: POST
+```
+
+Request Data
+```
 {
-    "street_address": "2 Work Avenue",
-    "city": "Johannesburg",
-    "country": "South Africa",
-    "contact_id": 2
+    "id": 1
 }
 ```
+The above request will return record data for Address record ID 1
 
+```
+Endpoint: /api/v1/address/1
+Request Method: GET
+```
+
+The above request will return record data for Address record ID 1
+
+```
+Endpoint: /api/v1/email_address
+Request Method: PUT
+```
+
+Request Data
 ```
 {
-    "street_address": "19 Work Street",
-    "city": "Cape Town",
-    "country": "South Africa",
-    "contact_id": 2
-}
-```
-
-Finally, to query the captured data for a contact, at the time of writing you will need to know the records IDs. To query data for the above requests:
-
-```
-Method: POST
-URI: http://**APPHOST**/api/v1/contact/view
-```
-
-Request Input:
-```
-{
+    "email_address": "peter@von-lichtenstein.com",
     "contact_id": 1
 }
 ```
 
 ```
 {
-    "contact_id": 2
+    "email_address": "petervonlichtenstein@gmail.com",
+    "contact_id": 1
 }
 ```
+The above requests will create a new Email Address record for a contact record with ID 1
+
+```
+Endpoint: /api/v1/email_address
+Request Method: POST
+```
+
+Request Data
+```
+{
+    "id": 1
+}
+```
+The above request will return record data for Email Address record ID 1
+
+```
+Endpoint: /api/v1/email_address/1
+Request Method: GET
+```
+
+The above request will return record data for Email Address record ID 1
+
+```
+Endpoint: /api/v1/phone_number
+Request Method: PUT
+```
+
+Request Data
+```
+{
+    "phone_number": "+155523232854",
+    "contact_id": 1
+}
+```
+The above requests will create a new Phone Number record for a contact record with ID 1
+
+```
+Endpoint: /api/v1/phone_number
+Request Method: POST
+```
+
+Request Data
+```
+{
+    "id": 1
+}
+```
+The above request will return record data for Phone Number record ID 1
+
+```
+Endpoint: /api/v1/phone_number/1
+Request Method: GET
+```
+The above request will return record data for Phone Number record ID 1
+
+```
+Endpoint: /api/v1/group
+Request Method: PUT
+```
+
+Request Data
+```
+{
+    "name": "Private Contact Group"
+}
+```
+The above requests will create a new Group record
+
+```
+Endpoint: /api/v1/group
+Request Method: POST
+```
+
+Request Data
+```
+{
+    "id": 1
+}
+```
+The above request will return record data for Group record ID 1
+
+```
+Endpoint: /api/v1/group/1
+Request Method: GET
+```
+The above request will return record data for Group record ID 1
+
+```
+Endpoint: /api/v1/contact_group
+Request Method: PUT
+```
+
+Request Data
+```
+{
+    "contact_id": 1,
+    "group_id": 1,
+}
+```
+The above request will attach a group record with an ID of 1 to a Contact record with an ID of 1
+
+```
+Endpoint: /api/v1/contact_group
+Request Method: POST
+```
+
+Request Data
+```
+{
+    "id": 1
+}
+```
+The above request will return record data for Contact Group record ID 1
+
+```
+Endpoint: /api/v1/contact_group/1
+Request Method: GET
+```
+The above request will return record data for Contact Group record ID 1
+
+
+```
+Endpoint: /api/v1/find
+Request Method: POST
+```
+
+Request Data
+```
+{
+    "query": "lichten",
+    "type": "email"
+}
+```
+
+The above request will query contacts with an email address containing 'lichten'
+
+Request Data
+```
+{
+    "query": "lichten",
+    "type": "contact"
+}
+```
+The above request will query contacts with a first name or last name containing 'lichten'
 
