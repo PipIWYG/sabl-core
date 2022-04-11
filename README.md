@@ -1,6 +1,6 @@
 # Simple Address Book Library - Core
 
-This repository contains a composer package library that can be included Laravel Installation. The package
+This repository contains a composer package library that can be included in a Laravel Installation. The package
 provides functionality that defines the database migrations and API routes available for use to manage and maintain
 Address Book data through an API Client such as Postman. Limited data validation is in place in an attempt to keep
 it as simple as possible for demonstration purposes.
