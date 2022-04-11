@@ -15,26 +15,23 @@ It is assumed that the system where this package is installed on is correctly co
 Application. This documentaion details the most basic installation requirements to configure Laravel and the 
 commands to run to load the package library from source control in a standard Laravel Application.
 
-Furthermore, to load the package source from repository, it is assumed that a valid GitHub SSH key is generated on
-the system where the package is being installed. Alternatively, without a Github SSH Key on the target system, the 
-repository reference URL to use to install the package will need to change from SSH to HTTPS.
-
 The package was created to make use of PHP 7.3 on a Linux/Ubuntu Server (21.10) environment making use of a local MySQL
-Server Database.
+Server Database and Apache. The package has not been tested in any other environments. 
 
 For detailed instructions on how to install Laravel, please see https://laravel.com/docs/9.x/installation.
 
 ## Installation
 
 To make use of this library, the base Laravel Application must first be installed and configured to be accessible over a
-web browser. Once an application is available and ready to be served on a correctly configured web server setup, 
-accessible through a web broser, additional steps must be taken to load the package library for use in the Laravel Web
+web browser. Once an application is available and ready to be served on a correctly configured web server, accessible
+through a web broser, additional steps must be taken to load the package library for use in the Laravel Web
 Application. For details about these steps, please see below.
 
 ### Environment
 
 The most basic environment specific configuration should be enough for this package to be used. A MySQL Database Schema
-must be created during the Laravel Setup to support data for capture and querying logic.
+must be created during or after the Laravel Setup to support data for capture and querying logic and to perform any
+CRUD operations available in the package code.
 
 ### Basic Laravel Installation via Composer
 
@@ -82,8 +79,11 @@ Save the file and close the editor.
 
 Next, run the following commands to include and install the package repository from source control.
 
-NOTE: If no repository SSH key exists to load the library source during installation, make use of the HTTPS section below
-instead of the SSH section
+NOTE: If no repository SSH key exists to load the library source during installation, make use of the HTTPS section 
+below instead of the SSH section. Alternatively, generate a valid SSH key to use SSH instead of HTTPS, which is usually 
+the prefered approach. Many resources exist on the internet that details the steps to follow to generate an SSH Key on
+your GitHub account. A simple Google Search will make you the wiser. For example purposes, either approach should 
+suffice.
 
 **SSH**
 ```
@@ -99,19 +99,21 @@ $ composer require pipiwyg/sabl-core:1.1
 
 ### Database Migrations
 
-To make use of the package functionality, run the database migrations to create the required database tables. In the 
-root of the application directory, run the following
+To make use of package functionality, run the database migrations to create the required database tables. To do this,
+navigate to the root directory of where the application is installed, and run the following Artisan command:
 
 ```
 php artisan migrate
 ```
 
-Once the database migrations have executed without error, an API client such as Postman can be used to create and query 
-database records.
+Once the database migrations have executed, an API client such as Postman can be used to create and query database
+records.
+
+### Access the Application through a Web Browser
 
 Make use of Artisan to Serve the application to be accessible through a web browser, or to use an API client. 
 Alternatively, a correctly configured Apache Web server may be used, althouhgh this part of the process is not
-documented here, and requires some additional knowledge to get running error free.
+documented here, and requires some additional knowledge and steps to be executed.
 
 ```
 php artisan serve
@@ -120,11 +122,12 @@ php artisan serve
 Once the application is accessible through a web browser, whether Artisan or Apache is used, see the usage instructions
 below for details on how to make use of the package functionality.
 
-### Usage
+--------------------
+
+### Basic Usage Instructions
 
 Making use of an API Client or similar, define the API Endpoint URI to create or query record data.
 
---------------------
 #### Request Methods (VERBS)
 **POST**
 
@@ -161,12 +164,17 @@ Example: `Endpoint URI: /api/v1/address_book`
 }
 ```
 
-The above request will create a Address Book record with a name of "Private Address Book".
+The above request will create an Address Book record with a name of "Private Address Book".
 
 --------------------
-### Available Endpoints and Request Examples
+### Detailed Usage Instructions
 
-Specify the request input data to create a new contact group, by setting the body of the request to raw JSON format.
+#### Available Endpoints and Request Examples
+
+Specify the request input data to create a new address book, by setting the body of the request to raw JSON format.
+
+--------------------
+***Create a new Address Book***
 
 ```
 Endpoint: /api/v1/address_book
@@ -179,7 +187,7 @@ Request Data
     "name": "Private Address Book"
 }
 ```
-The above request will create a new Address Book record
+The above request will create a new Address Book record.
 
 ```
 Endpoint: /api/v1/address_book
@@ -192,14 +200,17 @@ Request Data
     "id": 1
 }
 ```
-The above request will return record data for Address Book record ID 1
+The above request will return record data for Address Book record ID 1.
 
 ```
 Endpoint: /api/v1/address_book/1
 Request Method: GET
 ```
 
-The above request will return record data for Address Book record ID 1
+The above request will return record data for Address Book record ID 1.
+
+--------------------
+***Create a new Contact in an existing Address Book***
 
 ```
 Endpoint: /api/v1/contact
@@ -214,7 +225,7 @@ Request Data
     "address_book_id": 1
 }
 ```
-The above request will create a new Contact record in Address Book with ID 1
+The above request will create a new Contact record in Address Book with ID 1.
 
 ```
 Endpoint: /api/v1/contact
@@ -227,14 +238,17 @@ Request Data
     "id": 1
 }
 ```
-The above request will return record data for Contact record ID 1
+The above request will return record data for Contact record ID 1.
 
 ```
 Endpoint: /api/v1/contact/1
 Request Method: GET
 ```
 
-The above request will return record data for Contact record ID 1
+The above request will return record data for Contact record ID 1.
+
+--------------------
+***Create a new Address record for an existing Contact***
 
 ```
 Endpoint: /api/v1/address
@@ -251,7 +265,7 @@ Request Data
     "contact_id": 1
 }
 ```
-The above request will create a new Address record for a contact record with ID 1
+The above request will create a new Address record for a contact record with ID 1.
 
 ```
 Endpoint: /api/v1/address
@@ -264,14 +278,17 @@ Request Data
     "id": 1
 }
 ```
-The above request will return record data for Address record ID 1
+The above request will return record data for Address record ID 1.
 
 ```
 Endpoint: /api/v1/address/1
 Request Method: GET
 ```
 
-The above request will return record data for Address record ID 1
+The above request will return record data for Address record ID 1.
+
+--------------------
+***Create a new Email Address record for an existing Contact***
 
 ```
 Endpoint: /api/v1/email_address
@@ -292,7 +309,7 @@ Request Data
     "contact_id": 1
 }
 ```
-The above requests will create a new Email Address record for a contact record with ID 1
+The above requests will create a new Email Address record for a contact record with ID 1.
 
 ```
 Endpoint: /api/v1/email_address
@@ -305,14 +322,17 @@ Request Data
     "id": 1
 }
 ```
-The above request will return record data for Email Address record ID 1
+The above request will return record data for Email Address record ID 1.
 
 ```
 Endpoint: /api/v1/email_address/1
 Request Method: GET
 ```
 
-The above request will return record data for Email Address record ID 1
+The above request will return record data for Email Address record ID 1.
+
+--------------------
+***Create a new Phone Number record for an existing Contact***
 
 ```
 Endpoint: /api/v1/phone_number
@@ -326,7 +346,7 @@ Request Data
     "contact_id": 1
 }
 ```
-The above requests will create a new Phone Number record for a contact record with ID 1
+The above request will create a new Phone Number record for a contact record with ID 1.
 
 ```
 Endpoint: /api/v1/phone_number
@@ -339,13 +359,16 @@ Request Data
     "id": 1
 }
 ```
-The above request will return record data for Phone Number record ID 1
+The above request will return record data for Phone Number record ID 1.
 
 ```
 Endpoint: /api/v1/phone_number/1
 Request Method: GET
 ```
-The above request will return record data for Phone Number record ID 1
+The above request will return record data for Phone Number record ID 1.
+
+--------------------
+***Create a new Group record to tag Contacts***
 
 ```
 Endpoint: /api/v1/group
@@ -358,7 +381,7 @@ Request Data
     "name": "Private Contact Group"
 }
 ```
-The above requests will create a new Group record
+The above requests will create a new Group record.
 
 ```
 Endpoint: /api/v1/group
@@ -371,13 +394,16 @@ Request Data
     "id": 1
 }
 ```
-The above request will return record data for Group record ID 1
+The above request will return record data for Group record ID 1.
 
 ```
 Endpoint: /api/v1/group/1
 Request Method: GET
 ```
-The above request will return record data for Group record ID 1
+The above request will return record data for Group record ID 1.
+
+--------------------
+***Create a new Contact Group record for an existing contact and group***
 
 ```
 Endpoint: /api/v1/contact_group
@@ -391,7 +417,7 @@ Request Data
     "group_id": 1,
 }
 ```
-The above request will attach a group record with an ID of 1 to a Contact record with an ID of 1
+The above request will attach a group record with an ID of 1 to a Contact record with an ID of 1.
 
 ```
 Endpoint: /api/v1/contact_group
@@ -404,14 +430,16 @@ Request Data
     "id": 1
 }
 ```
-The above request will return record data for Contact Group record ID 1
+The above request will return record data for Contact Group record ID 1.
 
 ```
 Endpoint: /api/v1/contact_group/1
 Request Method: GET
 ```
-The above request will return record data for Contact Group record ID 1
+The above request will return record data for Contact Group record ID 1.
 
+--------------------
+***Searching Address Book Data***
 
 ```
 Endpoint: /api/v1/find
@@ -426,7 +454,7 @@ Request Data
 }
 ```
 
-The above request will query contacts with an email address containing 'lichten'
+The above request will query contacts with an email address containing 'lichten'.
 
 Request Data
 ```
@@ -435,12 +463,12 @@ Request Data
     "type": "contact"
 }
 ```
-The above request will query contacts with a first name or last name containing 'lichten'
+The above request will query contacts with a first name or last name containing 'lichten'.
 
-### Unit Tests
+### Unit Tests - FUNCTIONALITY / TEST CASES INCOMPLETE
 
 The package unit tests can be executed, provided that Unit Tests are correctly configured in the Root Application.
-This configuration directives are not currently included within the package source, but test cases have been created in
+This configuration is not currently included within the package source, but test cases can be created and executed in
 support of the correct unit testing configuration.
 
 Laravel makes use of SQLite to run Unit Tests on data in Memory. To get this to work correctly, follow these steps.
@@ -476,7 +504,8 @@ Then enable SQLite in phpunit.xml by adding the environment variable `DB_CONNECT
     ...
 ```
 
-With that out of the way, all that's left is configuring the base TestCase class to use migrations and seed the database before each test. To do so, add the `DatabaseMigrations` trait, and then add an Artisan call on the `setUp()` method:
+With that out of the way, all that's left is configuring the base TestCase class to use migrations and seed the database
+before each test. To do so, add the `DatabaseMigrations` trait, and then add an Artisan call on the `setUp()` method:
 
 ```
 <?php
