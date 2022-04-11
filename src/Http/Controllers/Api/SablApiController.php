@@ -725,7 +725,6 @@ class SablApiController
      * handleApiQuery
      *
      * @param null|string $query The request scope query
-     * @param null|string $action An identifier to define an action, such as 'all' or 'id'
      * @param null|int $id Should $action be set to id, this is the ID of the record to query
      * @return mixed
      */
