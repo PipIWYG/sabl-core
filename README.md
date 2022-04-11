@@ -1,32 +1,40 @@
 # Simple Address Book Library - Core
 
-This repository contains a composer package library that can be included in a Laravel Installation. The package
-provides functionality that defines the database migrations and API routes available for use to manage and maintain
-Address Book data through an API Client such as Postman. Limited data validation is in place in an attempt to keep
-it as simple as possible for demonstration purposes.
+This repository contains a composer package PHP library that can be included in a standard Laravel Installation, without
+any requirements to change any of the code inside the Laravel Application itself, to keep code modular and independant
+from base application level code. This simplifies code management allowing the package code to be versioned and 
+maintained independantly from a base Laravel Installation. The package could also be installed on various other versions
+of the Laravel Framework, which siplifies framework and related dependancy upgrades.
+
+The package provides functionality that defines the required database migrations and API routes available for use to 
+manage and maintain Address Book data through an API Client such as Postman. Limited data validation is in place in an 
+attempt to keep it as simple as possible for demonstration purposes.
 
 ## Assumptions
 It is assumed that the system where this package is installed on is correctly configured to host a Laravel Web
-Application. This documentaion details the most basic installation requirements to install Laravel and the 
+Application. This documentaion details the most basic installation requirements to configure Laravel and the 
 commands to run to load the package library from source control in a standard Laravel Application.
 
 Furthermore, to load the package source from repository, it is assumed that a valid GitHub SSH key is generated on
-the system where the package is being installed. Alternatively, without an Github SSH Key, the repository reference
-URL to use to install the package may need to change from SSH to HTTPS.
+the system where the package is being installed. Alternatively, without a Github SSH Key on the target system, the 
+repository reference URL to use to install the package will need to change from SSH to HTTPS.
 
-The package was created to make use of PHP 7.3 on a Linux/Ubuntu Server environment making use of a local MySQL
+The package was created to make use of PHP 7.3 on a Linux/Ubuntu Server (21.10) environment making use of a local MySQL
 Server Database.
 
 For detailed instructions on how to install Laravel, please see https://laravel.com/docs/9.x/installation.
 
 ## Installation
 
-To make use of this library, the base Laravel Application must first be installed, and configured to be accessed over a web browser. Once an application is available and ready to be served on a correctly 
-configured web server setup, accessible through a web broser, additional steps must be taken to load the package library for use in the Laravel Web Application. For details about these steps, please see below.
+To make use of this library, the base Laravel Application must first be installed and configured to be accessible over a
+web browser. Once an application is available and ready to be served on a correctly configured web server setup, 
+accessible through a web broser, additional steps must be taken to load the package library for use in the Laravel Web
+Application. For details about these steps, please see below.
 
 ### Environment
 
-The most basic environment specific configuration should be enough for this package to be used. A MySQL Database Schema must be created during the Laravel Setup to support data for capture and query logic.
+The most basic environment specific configuration should be enough for this package to be used. A MySQL Database Schema
+must be created during the Laravel Setup to support data for capture and querying logic.
 
 ### Basic Laravel Installation via Composer
 
@@ -37,7 +45,7 @@ $ composer create-project laravel/laravel example-app
 $ cd example-app
 ```
 
-Once the composer Laravel installation has completed, create a new MySQL database schema to host application data.
+Once the Laravel installation has completed, create a new MySQL database schema to host application data.
 ```
 $ mysql -uroot -p
 Enter password: 
@@ -53,7 +61,7 @@ Bye
 ```
 
 Next, edit the generated environment file (.env) to update the database credentials and schema information. Should 
-no .env file have been automatically created during the laravel installation, copy the .env.example file in the root
+no .env file have been automatically created during the Laravel installation, copy the .env.example file in the root
 directory to .env and then edit the environment file.
 
 ```
@@ -98,14 +106,19 @@ root of the application directory, run the following
 php artisan migrate
 ```
 
-Once the database migrations have executed without error, you may use an API client such as postman to create and query 
-database records. Serve the application to be able to access the App through a web browser, or to use an API client. 
-Once the application is accessible through a web browser, see the usage instructions below for details on how to make
-use of the package functionality
+Once the database migrations have executed without error, an API client such as Postman can be used to create and query 
+database records.
+
+Make use of Artisan to Serve the application to be accessible through a web browser, or to use an API client. 
+Alternatively, a correctly configured Apache Web server may be used, althouhgh this part of the process is not
+documented here, and requires some additional knowledge to get running error free.
 
 ```
 php artisan serve
 ```
+
+Once the application is accessible through a web browser, whether Artisan or Apache is used, see the usage instructions
+below for details on how to make use of the package functionality.
 
 ### Usage
 
@@ -115,7 +128,8 @@ Making use of an API Client or similar, define the API Endpoint URI to create or
 #### Request Methods (VERBS)
 **POST**
 
-The POST request method is used to Query Record Data for all available endpoint URIs, and requires request input data specifying the record ID to query
+The POST request method is used to Query Record Data for all available endpoint URIs, and requires request input data 
+specifying the record ID to query.
 
 Example: `Endpoint URI: /api/v1/address_book`
 ```
@@ -127,7 +141,8 @@ The above request will return data for an address book record with ID:1
 
 **GET**
 
-The GET request method is used to Query Record Data for all available endpoint URIs, and requires a record ID defined in the Request Endpoint URI.
+The GET request method is used to Query Record Data for all available endpoint URIs, and requires a record ID defined in
+the Request Endpoint URI.
 
 Example: `Endpoint URI: /api/v1/address_book/1`
 
@@ -135,7 +150,8 @@ The above request will return data for an address book record with ID:1
 
 **PUT**
 
-The PUT request method is used to Create Record Data for all available endpoint URIs, and requires record input data with the correct paraneters.
+The PUT request method is used to Create Record Data for all available endpoint URIs, and requires record input data 
+with the correct paraneters.
 
 Example: `Endpoint URI: /api/v1/address_book`
 
@@ -145,7 +161,7 @@ Example: `Endpoint URI: /api/v1/address_book`
 }
 ```
 
-The above request will create a Address Book record with a name of "Private Address Book"
+The above request will create a Address Book record with a name of "Private Address Book".
 
 --------------------
 ### Available Endpoints and Request Examples
